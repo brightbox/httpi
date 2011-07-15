@@ -69,7 +69,7 @@ module HTTPI
 
       def do_request(type, request)
         setup_client request
-        setup_ssl_auth request.auth.ssl if request.auth.ssl?
+        setup_ssl_auth request.auth.ssl if request.ssl?
 
         respond_with(client.start do |http|
           yield http, request_client(type, request)
@@ -83,8 +83,8 @@ module HTTPI
       end
 
       def setup_ssl_auth(ssl)
-        client.key = ssl.cert_key
-        client.cert = ssl.cert
+        client.key = ssl.cert_key if ssl.cert_key_file
+        client.cert = ssl.cert if ssl.cert_key_file
         client.ca_file = ssl.ca_cert_file if ssl.ca_cert_file
         client.verify_mode = ssl.openssl_verify_mode
       end
